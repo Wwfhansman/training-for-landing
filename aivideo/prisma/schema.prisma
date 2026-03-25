@@ -15,6 +15,22 @@ model Project {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   fragments Fragment[]
+  assets    Asset[]
+}
+
+model Asset {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name      String
+  type      String   // 'character' | 'scene'
+  description String @default("")
+  prompt    String   // 用于 AI 生成的详细描述提示词
+  imageUrl    String?
+  remoteImageUrl String? // 存储原始远程 URL (通常过期快，但生图时非常有用)
+  imageStatus String @default("idle")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Fragment {
@@ -42,6 +58,7 @@ model Shot {
   cameraAngle String   @default("")
   mood        String   @default("")
   imageUrl    String?
+  remoteImageUrl String? // 存储原始远程 URL 用于视频模型参考
   imageStatus String   @default("idle")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
